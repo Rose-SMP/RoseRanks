@@ -11,9 +11,8 @@ import rosesmp.roseranks.services.YAMLService;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
-
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
 	@Environment(EnvType.SERVER)
@@ -24,40 +23,32 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	public static YAMLService yamlService;
 	public static APIService apiService;
 
-	private static ArrayList<User> users;
+	private static HashMap<String, User> users;
 
 	@Override
 	public void onInitialize() {
 		config = new Config();
-		users = new ArrayList<>();
+		users = new HashMap<>();
 
 		LOGGER.info("RoseRanks initialized.");
 	}
 
 	@Override
-	public void beforeGameStart() {
-
-	}
+	public void beforeGameStart() {}
 
 	@Override
-	public void afterGameStart() {
-
-	}
+	public void afterGameStart() {}
 
 	@Override
-	public void onRecipesReady() {
-
-	}
+	public void onRecipesReady() {}
 
 	@Override
-	public void initNamespaces() {
-
-	}
+	public void initNamespaces() {}
 
 	/**
 	 * @return The list of loaded users
 	 */
-	public static ArrayList<User> getUsers() {
+	public static HashMap<String, User> getUsers() {
 		return users;
 	}
 

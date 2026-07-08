@@ -22,13 +22,13 @@ public class PacketHandlerLogin {
 	@Shadow private String username;
 
 	/**
-	 * Handles loading a user's data.
+	 * Handles loading a user's data upon login.
 	 */
 	@Inject(at = @At(value = "TAIL"), method = "doLogin", remap = false)
 	public void doLogin(PacketLogin loginPacket, CallbackInfo ci) throws IOException {
 		File file = yamlService.usersFile;
 		UUID uuid = Objects.requireNonNull(UUIDHelper.getUUIDFromName(username));
 
-		getUsers().add(new User(uuid));
+		getUsers().put(username, new User(uuid));
 	}
 }

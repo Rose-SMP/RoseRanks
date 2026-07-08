@@ -1,45 +1,44 @@
 package rosesmp.roseranks.data;
 
+import rosesmp.roseranks.RoseRanks;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The data structure RoseRanks uses to store player information.
  */
 public class User extends PermissionEntity {
 	private final UUID uuid;
+	private Group group;
 
-	public User(UUID uuid) {
+	public User(UUID uuid) throws IOException {
 		this.uuid = uuid;
+
+		if (yamlService.userRegistered(uuid)) {
+			load();
+		}
+		else {
+			this.group = RoseRanks.defaultGroup();
+		}
 	}
 
 	/**
 	 * Loads a user's data from file.
-	 * @return Load success
 	 */
-	@Override public boolean load() {
-		return false;
+	public void load() throws IOException {
+		Map<String, Object> data = yamlService.load(yamlService.usersFile);
+		this.group = new Group(data.get("group").toString());
 	}
 
 	/**
 	 * Saves any changes made to a user to file.
 	 * @return Save success
 	 */
-	@Override public boolean save() throws IOException {
+	public boolean save() throws IOException {
 		Map<String, Object> data = new LinkedHashMap<>();
-		data.put("name", apiService.getUsername(uuid));
+		data.put("name", apiService.fetchUsername(uuid));
 
 		return yamlService.save(yamlService.usersFile, data);
-	}
-
-	/**
-	 * Deletes a user's RoseRanks data from the server files.
-	 * @return Deletion success
-	 */
-	@Override public boolean delete() {
-		return false;
 	}
 
 	/**

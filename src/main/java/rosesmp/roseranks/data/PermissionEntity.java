@@ -3,7 +3,6 @@ package rosesmp.roseranks.data;
 import rosesmp.roseranks.RoseRanks;
 import rosesmp.roseranks.services.APIService;
 import rosesmp.roseranks.services.YAMLService;
-import java.io.IOException;
 
 public class PermissionEntity {
 	public final YAMLService yamlService;
@@ -12,16 +11,6 @@ public class PermissionEntity {
 	public PermissionEntity() {
 		this.yamlService = RoseRanks.yamlService;
 		this.apiService = RoseRanks.apiService;
-	}
-
-	//Load data for entity from file
-	public boolean load() {
-		return false;
-	}
-
-	//Save changes made to entity to file
-	public boolean save() throws IOException {
-		return false;
 	}
 
 	//Deletes entity's data
@@ -44,6 +33,7 @@ public class PermissionEntity {
 		return false;
 	}
 
+	//Gets the entity's current prefix
 	public String getPrefix() {
 		return "1";
 	}

@@ -11,7 +11,13 @@ import java.util.UUID;
 
 public class APIService {
 
-	public String getUsername(UUID uuid) throws IOException {
+	/**
+	 * Fetches a username from the Mojang API by uuid.
+	 * @param uuid The uuid used to query.
+	 * @return The uuid's current associated username
+	 * @throws IOException In the event of a bad http response
+	 */
+	public String fetchUsername(UUID uuid) throws IOException {
 		//Establish connection and send request
 		URL url = new URL("https://api.minecraftservices.com/minecraft/profile/lookup/" + uuid);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -27,7 +33,12 @@ public class APIService {
 		return processResponse(connection).get("name").toString();
 	}
 
-	//Convert response into a usable JSON Object
+	/**
+	 * Converts an API response into a usable JsonObject
+	 * @param connection The API request instance
+	 * @return The converted JsonObject
+	 * @throws IOException If the BufferedReader fails
+	 */
 	private JsonObject processResponse(HttpURLConnection connection) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 

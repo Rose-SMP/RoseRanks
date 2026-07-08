@@ -1,22 +1,25 @@
 package rosesmp.roseranks.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * A group of players used for player categorization and permission allocation.
  */
 public class Group extends PermissionEntity {
 	private final String name;
+	private final ArrayList<String> permissions;
 
 	public Group(String name) {
 		this.name = name;
+		this.permissions = new ArrayList<>();
 	}
 
 	/**
 	 * Loads a group's data from file.
 	 * @return Load success
 	 */
-	@Override public boolean load() {
+	public boolean load() {
 		return false;
 	}
 
@@ -24,7 +27,7 @@ public class Group extends PermissionEntity {
 	 * Saves any changes made to a group to file.
 	 * @return Save success
 	 */
-	@Override public boolean save() {
+	public boolean save() {
 		//Map<String, Object> data = new LinkedHashMap<>();
 		//return yamlService.save(yamlService.groupsFile, data);
 		return false;

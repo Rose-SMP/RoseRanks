@@ -12,17 +12,25 @@ import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
 	@Environment(EnvType.SERVER)
 	public static final String MOD_ID = HalpLibe.registerMod("roseranks", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
 	public Config config;
 	public static YAMLService yamlService;
 	public static APIService apiService;
 
+	private static ArrayList<User> users;
+
 	@Override
 	public void onInitialize() {
 		config = new Config();
+		users = new ArrayList<>();
+
 		LOGGER.info("RoseRanks initialized.");
 	}
 
@@ -46,7 +54,18 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 
 	}
 
-	public Group defaultGroup() {
-		return new Group("default");
+	/**
+	 * @return The list of loaded users
+	 */
+	public static ArrayList<User> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @return The configured default group
+	 */
+	public static Group defaultGroup() throws IOException {
+		String name = yamlService.getString(yamlService.configFile, "default-group");
+		return new Group(name);
 	}
 }

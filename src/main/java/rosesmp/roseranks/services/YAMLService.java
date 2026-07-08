@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
 
@@ -46,15 +47,28 @@ public class YAMLService {
 	 * @param file The file whose data will be loaded.
 	 * @return Load success
 	 */
-	public boolean load(File file) throws IOException {
+	public Map<String, Object> load(File file) throws IOException {
 		if (!file.exists()) {
-			return false;
+			return null;
 		}
 		InputStream inputStream = Files.newInputStream(Paths.get(file.getPath()));
 		Yaml yaml = new Yaml();
-		Map<String, Object> yml = yaml.load(inputStream);
 
-		return true;
+		return yaml.load(inputStream);
+	}
+
+	/**
+	 * Returns whether a YAML has a key.
+	 * @param file The file being queried.
+	 * @param path The location of the property.
+	 * @return Whether the property exists
+	 */
+	public boolean hasProperty(File file, String path) throws IOException {
+		InputStream inputStream = Files.newInputStream(Paths.get(file.getPath()));
+		Yaml yaml = new Yaml();
+		Map<String, Object> data = yaml.load(inputStream);
+
+		return data.containsKey(path);
 	}
 
 	/**
@@ -89,5 +103,14 @@ public class YAMLService {
 	 */
 	public int getInt(File file, String path) throws IOException {
 		return (int) getProperty(file, path);
+	}
+
+	/**
+	 * Returns whether a user has data in users.yml.
+	 * @param uuid The user's uuid.
+	 * @return Whether the user is registered
+	 */
+	public boolean userRegistered(UUID uuid) throws IOException {
+		return this.hasProperty(usersFile, uuid.toString());
 	}
 }

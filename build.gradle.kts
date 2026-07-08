@@ -61,6 +61,10 @@ dependencies {
 	implementation(libs.log4j.api12)
 	implementation(libs.gson)
 
+	// https://mvnrepository.com/artifact/org.yaml/snakeyaml
+	implementation("org.yaml:snakeyaml:2.4")
+	include("org.yaml:snakeyaml:2.4")
+
 	implementation(libs.commonsLang3)
 	include(libs.commonsLang3)
 }

@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rosesmp.roseranks.data.*;
 import rosesmp.roseranks.services.APIService;
 import rosesmp.roseranks.services.YAMLService;
 import turniplabs.halplibe.HalpLibe;
@@ -15,14 +16,13 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	@Environment(EnvType.SERVER)
 	public static final String MOD_ID = HalpLibe.registerMod("roseranks", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public YAMLService yamlService;
-	public APIService apiService;
+	public Config config;
+	public static YAMLService yamlService;
+	public static APIService apiService;
 
 	@Override
 	public void onInitialize() {
-		yamlService = new YAMLService();
-		apiService = new APIService();
-
+		config = new Config();
 		LOGGER.info("RoseRanks initialized.");
 	}
 
@@ -44,5 +44,9 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	@Override
 	public void initNamespaces() {
 
+	}
+
+	public Group defaultGroup() {
+		return new Group("default");
 	}
 }

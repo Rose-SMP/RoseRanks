@@ -3,7 +3,6 @@ package rosesmp.roseranks.services;
 import net.fabricmc.loader.api.FabricLoader;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,10 +11,12 @@ import java.util.Map;
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
 
 public class YAMLService {
+	public File configFile;
 	public File usersFile;
 	public File groupsFile;
 
 	public YAMLService() {
+		this.configFile = new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/config.yml");
 		this.usersFile = new File (FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/users.yml");
 		this.groupsFile = new File (FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/groups.yml");
 	}
@@ -36,6 +37,22 @@ public class YAMLService {
 		Yaml yaml = new Yaml(options);
 		yaml.dump(data, writer);
 		writer.close();
+
+		return true;
+	}
+
+	/**
+	 * Loads a file's data.
+	 * @param file The file whose data will be loaded.
+	 * @return Load success
+	 */
+	public boolean load(File file) throws IOException {
+		if (!file.exists()) {
+			return false;
+		}
+		InputStream inputStream = Files.newInputStream(Paths.get(file.getPath()));
+		Yaml yaml = new Yaml();
+		Map<String, Object> yml = yaml.load(inputStream);
 
 		return true;
 	}
@@ -65,7 +82,7 @@ public class YAMLService {
 	}
 
 	/**
-	 * Retrieves a integer from a file.
+	 * Retrieves an integer from a file.
 	 * @param file The file in which the data is stored.
 	 * @param path The location of the desired integer.
 	 * @return The desired integer

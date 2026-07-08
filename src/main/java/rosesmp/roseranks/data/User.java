@@ -1,7 +1,5 @@
 package rosesmp.roseranks.data;
 
-import rosesmp.roseranks.services.APIService;
-import rosesmp.roseranks.services.YAMLService;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,13 +10,9 @@ import java.util.UUID;
  */
 public class User extends PermissionEntity {
 	private final UUID uuid;
-	private final YAMLService yamlService;
-	private final APIService apiService;
 
 	public User(UUID uuid) {
 		this.uuid = uuid;
-		this.yamlService = plugin.yamlService;
-		this.apiService = plugin.apiService;
 	}
 
 	/**

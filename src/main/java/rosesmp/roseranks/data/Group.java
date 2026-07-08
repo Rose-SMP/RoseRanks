@@ -1,7 +1,5 @@
 package rosesmp.roseranks.data;
 
-import rosesmp.roseranks.services.APIService;
-import rosesmp.roseranks.services.YAMLService;
 import java.io.IOException;
 
 /**
@@ -9,13 +7,9 @@ import java.io.IOException;
  */
 public class Group extends PermissionEntity {
 	private final String name;
-	private final YAMLService yamlService;
-	private final APIService apiService;
 
 	public Group(String name) {
 		this.name = name;
-		this.yamlService = plugin.yamlService;
-		this.apiService = plugin.apiService;
 	}
 
 	/**

@@ -28,9 +28,33 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	@Override
 	public void onInitialize() {
 		config = new Config();
+		yamlService = new YAMLService();
+		apiService = new APIService();
 		users = new HashMap<>();
 
-		LOGGER.info("RoseRanks initialized.");
+		try {
+			initializeFiles();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			LOGGER.info("RoseRanks initialized. Default group: {}", defaultGroup().name());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void initializeFiles() throws IOException {
+		if (!yamlService.configFile.exists()) {
+			yamlService.configFile.createNewFile();
+		}
+		if (!yamlService.usersFile.exists()) {
+			yamlService.usersFile.createNewFile();
+		}
+		if (!yamlService.groupsFile.exists()) {
+			yamlService.groupsFile.createNewFile();
+		}
 	}
 
 	@Override

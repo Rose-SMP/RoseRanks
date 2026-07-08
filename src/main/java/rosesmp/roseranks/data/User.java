@@ -4,6 +4,9 @@ import rosesmp.roseranks.RoseRanks;
 import java.io.IOException;
 import java.util.*;
 
+import static rosesmp.roseranks.RoseRanks.apiService;
+import static rosesmp.roseranks.RoseRanks.yamlService;
+
 /**
  * The data structure RoseRanks uses to store player information.
  */
@@ -36,9 +39,14 @@ public class User extends PermissionEntity {
 	 */
 	public boolean save() throws IOException {
 		Map<String, Object> data = new LinkedHashMap<>();
-		data.put("name", apiService.fetchUsername(uuid));
+		data.put(uuid + ".name", apiService.fetchUsername(uuid));
 
-		return yamlService.save(yamlService.usersFile, data);
+		if (yamlService.save(yamlService.usersFile, data)) {
+			return true;
+		}
+
+		RoseRanks.LOGGER.error("Failed to save {}'s data!", uuid);
+		return false;
 	}
 
 	/**

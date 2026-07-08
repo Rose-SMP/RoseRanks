@@ -3,6 +3,8 @@ package rosesmp.roseranks.data;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static rosesmp.roseranks.RoseRanks.yamlService;
+
 /**
  * A group of players used for player categorization and permission allocation.
  */
@@ -13,6 +15,10 @@ public class Group extends PermissionEntity {
 	public Group(String name) {
 		this.name = name;
 		this.permissions = new ArrayList<>();
+	}
+
+	public String name() {
+		return name;
 	}
 
 	/**

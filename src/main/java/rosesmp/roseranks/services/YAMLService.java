@@ -3,6 +3,7 @@ package rosesmp.roseranks.services;
 import net.fabricmc.loader.api.FabricLoader;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import rosesmp.roseranks.RoseRanks;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,16 +29,20 @@ public class YAMLService {
 	 * @param data The data to be saved to the file.
 	 * @return Save success
 	 */
-	public boolean save(File file, Map<String, Object> data) throws FileNotFoundException {
-		PrintWriter writer = new PrintWriter(file);
+	public boolean save(File file, Map<String, Object> data) {
+		try {
+			PrintWriter writer = new PrintWriter(file);
+			DumperOptions options = new DumperOptions();
+			options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+			options.setIndent(2);
 
-		DumperOptions options = new DumperOptions();
-		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		options.setIndent(2);
-
-		Yaml yaml = new Yaml(options);
-		yaml.dump(data, writer);
-		writer.close();
+			Yaml yaml = new Yaml(options);
+			yaml.dump(data, writer);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			RoseRanks.LOGGER.error("Failed to find {}!", file.getName());
+			return false;
+		}
 
 		return true;
 	}

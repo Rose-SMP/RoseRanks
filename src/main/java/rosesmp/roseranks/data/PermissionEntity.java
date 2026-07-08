@@ -1,16 +1,9 @@
 package rosesmp.roseranks.data;
 
-import rosesmp.roseranks.RoseRanks;
-import rosesmp.roseranks.services.APIService;
-import rosesmp.roseranks.services.YAMLService;
-
 public class PermissionEntity {
-	public final YAMLService yamlService;
-	public final APIService apiService;
 
 	public PermissionEntity() {
-		this.yamlService = RoseRanks.yamlService;
-		this.apiService = RoseRanks.apiService;
+
 	}
 
 	//Deletes entity's data

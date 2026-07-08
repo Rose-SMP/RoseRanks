@@ -1,11 +1,11 @@
 {
 	"schemaVersion": 1,
-	"id": "examplemod",
+	"id": "roseranks",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This mod aims to help new BTA modders.",
+	"name": "Rose Ranks",
+	"description": "A group management server-mod designed for Rose SMP.",
 	"authors": [
-		"Turnip Labs"
+		"coffeelover42"
 	],
 	"contact": {
 		"homepage": "",
@@ -16,20 +16,20 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"turniplabs.examplemod.ExampleMod"
+			"rosesmp.roseranks.RoseRanks"
 		],
 		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"rosesmp.roseranks.RoseRanks"
 		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"rosesmp.roseranks.RoseRanks"
 		],
 		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+			"rosesmp.roseranks.RoseRanks"
 		]
 	},
 	"mixins": [
-		"examplemod.mixins.json"
+		"roseranks.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=${fabricloader}",

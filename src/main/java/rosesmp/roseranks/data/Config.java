@@ -1,13 +1,16 @@
 package rosesmp.roseranks.data;
 
-import java.io.IOException;
-import java.util.Map;
+import net.fabricmc.loader.api.FabricLoader;
+import java.io.File;
 
-import static rosesmp.roseranks.RoseRanks.yamlService;
+import static rosesmp.roseranks.RoseRanks.MOD_ID;
 
 public class Config {
+	private final YamlConfiguration yaml;
+	private final File file;
 
-	public Map<String, Object> load() throws IOException {
-		return yamlService.load(yamlService.configFile);
+	public Config() {
+		this.file = new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/config.yml");
+		this.yaml = new YamlConfiguration(file);
 	}
 }

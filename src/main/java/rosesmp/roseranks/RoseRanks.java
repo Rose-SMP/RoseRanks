@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rosesmp.roseranks.data.*;
 import rosesmp.roseranks.services.APIService;
-import rosesmp.roseranks.services.YAMLService;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -20,40 +19,19 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public Config config;
-	public static YAMLService yamlService;
 	public static APIService apiService;
-
 	private static HashMap<String, User> users;
 
 	@Override
 	public void onInitialize() {
-		config = new Config();
-		yamlService = new YAMLService();
 		apiService = new APIService();
+		config = new Config();
 		users = new HashMap<>();
-
-		try {
-			initializeFiles();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 
 		try {
 			LOGGER.info("RoseRanks initialized. Default group: {}", defaultGroup().name());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	private void initializeFiles() throws IOException {
-		if (!yamlService.configFile.exists()) {
-			yamlService.configFile.createNewFile();
-		}
-		if (!yamlService.usersFile.exists()) {
-			yamlService.usersFile.createNewFile();
-		}
-		if (!yamlService.groupsFile.exists()) {
-			yamlService.groupsFile.createNewFile();
 		}
 	}
 
@@ -80,7 +58,7 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	 * @return The configured default group
 	 */
 	public static Group defaultGroup() throws IOException {
-		String name = yamlService.getString(yamlService.configFile, "default-group");
-		return new Group(name);
+		//String name = yamlService.getString(yamlService.configFile, "default-group");
+		return new Group("e");
 	}
 }

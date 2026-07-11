@@ -1,84 +1,63 @@
 package rosesmp.roseranks.data;
 
-import rosesmp.roseranks.RoseRanks;
+import net.fabricmc.loader.api.FabricLoader;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static rosesmp.roseranks.RoseRanks.apiService;
-import static rosesmp.roseranks.RoseRanks.yamlService;
+import static rosesmp.roseranks.RoseRanks.*;
 
 /**
- * The data structure RoseRanks uses to store player information.
+ * The data structure RoseRanks uses to handle player information.
  */
-public class User extends PermissionEntity {
+public class User {
+	private final YamlConfiguration yaml;
+	private final File file;
 	private final UUID uuid;
 	private Group group;
 
-	public User(UUID uuid) throws IOException {
+	public User(UUID uuid) {
 		this.uuid = uuid;
 
-		if (yamlService.userRegistered(uuid)) {
-			load();
-		}
-		else {
-			this.group = RoseRanks.defaultGroup();
-		}
+		this.file = new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/users/" + uuid + ".yml");
+		this.yaml = new YamlConfiguration(file);
 	}
 
 	/**
 	 * Loads a user's data from file.
 	 */
-	public void load() throws IOException {
-		Map<String, Object> data = yamlService.load(yamlService.usersFile);
-		this.group = new Group(data.get("group").toString());
+	public void load() {
+		yaml.load(this.getClass());
 	}
 
 	/**
-	 * Saves any changes made to a user to file.
-	 * @return Save success
+	 * Updates user's file with changes made during runtime.
 	 */
-	public boolean save() throws IOException {
-		Map<String, Object> data = new LinkedHashMap<>();
-		data.put(uuid + ".name", apiService.fetchUsername(uuid));
-
-		if (yamlService.save(yamlService.usersFile, data)) {
-			return true;
-		}
-
-		RoseRanks.LOGGER.error("Failed to save {}'s data!", uuid);
-		return false;
+	public void save() throws IOException {
+		yaml.save(this);
 	}
 
 	/**
 	 * Grants a permission to a user.
-	 * @return Grant success
+	 * @return Grant success.
 	 */
-	@Override public boolean grant() {
+	public boolean grant() {
 		return false;
 	}
 
 	/**
 	 * Revokes a permission from a user.
-	 * @return Revocation success
+	 * @return Revocation success.
 	 */
-	@Override public boolean revoke() {
+	public boolean revoke() {
 		return false;
 	}
 
 	/**
 	 * Checks whether a user has a given permission.
-	 * @return Whether the user has the permission
+	 * @return Whether the user has the permission.
 	 */
-	@Override public boolean hasPermission() {
+	public boolean hasPermission() {
 		return false;
-	}
-
-	/**
-	 * Retrieves a string from a user's data.
-	 * @param path The location of the desired value.
-	 * @return The string at the given path.
-	 */
-	public String getString(String path) throws IOException {
-		return yamlService.getString(yamlService.usersFile, uuid.toString() + "." + path);
 	}
 }

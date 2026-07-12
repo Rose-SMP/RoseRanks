@@ -7,8 +7,8 @@
   },
   "mixins": [],
   "server": [
-    "PacketHandlerServer",
-    "PacketHandlerLogin"
+    "PacketHandlerLogin",
+    "PacketHandlerServer"
   ],
   "client": []
 }

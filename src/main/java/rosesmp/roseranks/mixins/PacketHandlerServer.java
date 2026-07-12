@@ -7,6 +7,7 @@ import net.minecraft.core.net.packet.PacketDisconnect;
 import net.minecraft.core.net.packet.PacketMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.server.net.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,7 +18,7 @@ import rosesmp.roseranks.RoseRanks;
 import rosesmp.roseranks.data.User;
 import java.io.IOException;
 
-import static rosesmp.roseranks.RoseRanks.getUsers;
+import static rosesmp.roseranks.RoseRanks.getLoadedUsers;
 
 @Mixin(value = net.minecraft.server.net.handler.PacketHandlerServer.class, remap = false)
 public class PacketHandlerServer {
@@ -29,16 +30,20 @@ public class PacketHandlerServer {
 	 * Handles unloading a user's data upon disconnect.
 	 */
 	@Inject(at = @At(value = "HEAD"), method = "handleDisconnect", remap = false)
-	public void handleDisconnect(PacketDisconnect packetDisconnect, CallbackInfo ci) throws IOException {
-		User user = getUsers().get(playerEntity.username);
+	public void onDisconnect(PacketDisconnect packetDisconnect, CallbackInfo ci) throws IOException {
+		User user = getLoadedUsers().get(playerEntity.username);
 		user.save();
 
-		getUsers().remove(playerEntity.username);
+		getLoadedUsers().remove(playerEntity.username);
 	}
 
+	/**
+	 * Adds prefixes and applies configured chat formatting to player chat messages.
+	 */
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleMessage", remap = false, cancellable = true)
-	public void handleMessage(PacketMessage packet, CallbackInfo ci, @Local(name = "message") String message) throws IOException {
-		User user = getUsers().get(playerEntity.username);
+	public void onChat(PacketMessage packet, CallbackInfo ci, @Local(name = "message") String message) throws IOException {
+		//Get player's prefix
+		User user = getLoadedUsers().get(playerEntity.username);
 		String prefix = user.getPrefix();
 		prefix = ChatEmotes.process(prefix);
 
@@ -46,7 +51,25 @@ public class PacketHandlerServer {
 		message = prefix + playerEntity.getDisplayName() + "§0: " + TextFormatting.RESET + message;
 
 		RoseRanks.LOGGER.info(message);
-		this.mcServer.playerList.sendEncryptedChatToAllPlayers(message);
+		mcServer.playerList.sendEncryptedChatToAllPlayers(message);
 		ci.cancel();
+	}
+
+	/**
+	 * Implements custom permissions system
+	 */
+	@Inject(at = @At(value = "HEAD"), method = "handleSlashCommand", remap = false)
+	public void onCommand(String s, CallbackInfo ci) throws IOException {
+		ServerCommandSource serverCommandSource = new ServerCommandSource(this.mcServer, this.playerEntity);
+
+		//Remove slash, then split each word, then get just the first
+		String commandLabel = s.substring(1).split(" ")[0];
+
+		//Deny command execution if the sender lacks the necessary permission, unless they're an operator
+		User user = getLoadedUsers().get(playerEntity.username);
+		if (!user.hasPermission("minecraft." + commandLabel) && !playerEntity.isOperator()) {
+			playerEntity.sendMessage("§eYou do not have permission to execute /" + commandLabel + "!");
+		}
+		//TODO: Empower permissions to grant access to op commands to non-ops
 	}
 }

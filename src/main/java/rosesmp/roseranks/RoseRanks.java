@@ -18,19 +18,22 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	public static final String MOD_ID = HalpLibe.registerMod("roseranks", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private Config config;
+	private static Config config;
 
 	public static APIService apiService;
-	private static HashMap<String, User> users;
+	private static HashMap<String, User> loadedUsers;
+	private static HashMap<String, Group> groups;
 
 	@Override
 	public void onInitialize() {
 		apiService = new APIService();
 		config = new Config();
-		users = new HashMap<>();
+		loadedUsers = new HashMap<>();
+		groups = new HashMap<>();
 
 		try {
-			LOGGER.info("RoseRanks initialized. Default group: {}", defaultGroup().getName());
+			config.load();
+			LOGGER.info("RoseRanks initialized. Default group: {}", config.getDefaultGroup());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -48,17 +51,15 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	@Override
 	public void initNamespaces() {}
 
-	public static HashMap<String, User> getUsers() {
-		return users;
+	public static Config getConfig() {
+		return config;
 	}
 
-	/**
-	 * @return The configured default group
-	 */
-	public static Group defaultGroup() throws IOException {
-		Group group = new Group();
-		group.load("Bud");
+	public static HashMap<String, User> getLoadedUsers() {
+		return loadedUsers;
+	}
 
-		return group;
+	public static HashMap<String, Group> getGroups() {
+		return groups;
 	}
 }

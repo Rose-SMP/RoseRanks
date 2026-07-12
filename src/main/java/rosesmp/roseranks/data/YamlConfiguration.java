@@ -82,6 +82,7 @@ public class YamlConfiguration {
 	 * @return The desired String
 	 */
 	public ArrayList<String> getList(String path) throws IOException {
+		//TODO: Find a better way to do this
 		return (ArrayList<String>) get(path);
 	}
 

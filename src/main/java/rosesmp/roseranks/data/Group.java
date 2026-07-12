@@ -1,7 +1,6 @@
 package rosesmp.roseranks.data;
 
 import net.fabricmc.loader.api.FabricLoader;
-import rosesmp.roseranks.RoseRanks;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
+import static rosesmp.roseranks.RoseRanks.getGroups;
 
 /**
  * A group of players used for player categorization and permission allocation.
@@ -23,6 +23,7 @@ public class Group {
 	private String name;
 
 	private String prefix;
+	private ArrayList<String> parents;
 	private ArrayList<String> permissions;
 
 	public Group() {}
@@ -32,6 +33,7 @@ public class Group {
 	 */
 	public void load(String name) throws IOException {
 		this.name = name;
+		this.parents = new ArrayList<>();
 		this.permissions = new ArrayList<>();
 
 		//Load yml
@@ -45,9 +47,11 @@ public class Group {
 
 		//Populate fields of this object with the yml's data
 		setPrefix(yaml.getString("prefix"));
+		setParents(yaml.getList("parents"));
 		setPermissions(yaml.getList("permissions"));
 
-		RoseRanks.LOGGER.info("Loaded group {}!\nPrefix: {}.\nPermissions: {}", name, prefix, getPermissions());
+		//Add group to list of loaded groups, so it doesn't need to be loaded every time it's accessed
+		getGroups().putIfAbsent(name, this);
 	}
 
 	/**
@@ -69,7 +73,13 @@ public class Group {
 	 * Updates group's file with changes made during runtime.
 	 */
 	public void save() throws IOException {
+		if (name.isEmpty()) {
+			return;
+		}
+
 		Map<String, Object> data = new LinkedHashMap<>();
+		data.put("prefix", prefix);
+		data.put("parents", parents);
 		data.put("permissions", permissions);
 
 		yaml.save(data);
@@ -99,7 +109,25 @@ public class Group {
 	/**
 	 * @return Whether the group has the permission.
 	 */
-	public boolean hasPermission() {
+	public boolean hasPermission(String permission) throws IOException {
+		//Check this group for the permission
+		if (permissions.contains(permission)) {
+			return permissions.contains(permission);
+		}
+
+		//Check parent groups for the permission
+		for (String str : parents) {
+			if (getGroups().containsKey(str)) {
+				return getGroups().get(str).hasPermission(permission);
+			}
+			Group group = new Group();
+			group.load(str);
+			if (group.hasPermission(permission)) {
+				return group.hasPermission(permission);
+			}
+		}
+
+		//Reached if this group nor any of its parents have the permission
 		return false;
 	}
 
@@ -137,6 +165,14 @@ public class Group {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public ArrayList<String> getParents() {
+		return parents;
+	}
+
+	public void setParents(ArrayList<String> parents) {
+		this.parents = parents;
 	}
 
 	public ArrayList<String> getPermissions() {

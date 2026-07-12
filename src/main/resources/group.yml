@@ -1,3 +1,4 @@
 prefix: ""
+parents:
 permissions:
   - minecraft.help

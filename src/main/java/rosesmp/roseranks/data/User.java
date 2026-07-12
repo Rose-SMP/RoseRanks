@@ -2,6 +2,7 @@ package rosesmp.roseranks.data;
 
 import net.fabricmc.loader.api.FabricLoader;
 import rosesmp.roseranks.RoseRanks;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
+import static rosesmp.roseranks.RoseRanks.getGroups;
 
 /**
  * The data structure RoseRanks uses to handle player information.
@@ -38,10 +40,9 @@ public class User {
 		yaml = new YamlConfiguration(file);
 		yaml.load(this.getClass());
 
-		//Populate fields of this object with the yml's data
-		setGroup(RoseRanks.defaultGroup().getName());
 
-		RoseRanks.LOGGER.info("Loaded user {}!\nGroup: {}.", uuid, group);
+		//Populate fields of this object with the yml's data
+		setGroup(yaml.getString("group"));
 	}
 
 	/**
@@ -89,8 +90,8 @@ public class User {
 	 * Checks whether a user has a given permission.
 	 * @return Whether the user has the permission.
 	 */
-	public boolean hasPermission() {
-		return false;
+	public boolean hasPermission(String permission) throws IOException {
+		return resolveGroup().hasPermission(permission);
 	}
 
 	/*
@@ -125,14 +126,22 @@ public class User {
 		return group;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setGroup(String group) throws IOException {
+		//Fallback is needed for when the default group did not exist at user creation
+		this.group = (!group.isEmpty()) ? group : RoseRanks.getConfig().getDefaultGroup();
+	}
+
+	private Group resolveGroup() throws IOException {
+		if (getGroups().containsKey(group)) {
+			return getGroups().get(group);
+		} else {
+			Group group = new Group();
+			group.load(this.getGroup());
+			return group;
+		}
 	}
 
 	public String getPrefix() throws IOException {
-		Group group = new Group();
-		group.load(this.getGroup());
-
-		return group.getPrefix();
+		return resolveGroup().getPrefix();
 	}
 }

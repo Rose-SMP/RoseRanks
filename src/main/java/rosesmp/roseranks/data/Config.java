@@ -16,6 +16,7 @@ public class Config {
 	private File file;
 
 	private String defaultGroup;
+	private String chatFormat;
 
 	public Config() {}
 
@@ -30,6 +31,7 @@ public class Config {
 
 		//Populate fields of this object with the yml's data
 		setDefaultGroup(yaml.getString("defaultGroup"));
+		setChatFormat(yaml.getString("chatFormat"));
 	}
 
 	private void intialize() throws IOException {
@@ -76,5 +78,13 @@ public class Config {
 
 	public void setDefaultGroup(String defaultGroup) {
 		this.defaultGroup = defaultGroup;
+	}
+
+	public String getChatFormat() {
+		return chatFormat;
+	}
+
+	public void setChatFormat(String chatFormat) {
+		this.chatFormat = chatFormat;
 	}
 }

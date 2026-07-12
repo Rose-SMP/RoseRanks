@@ -2,7 +2,6 @@ package rosesmp.roseranks.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.net.ChatEmotes;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.PacketDisconnect;
 import net.minecraft.core.net.packet.PacketMessage;
 import net.minecraft.server.MinecraftServer;
@@ -18,6 +17,7 @@ import rosesmp.roseranks.RoseRanks;
 import rosesmp.roseranks.data.User;
 import java.io.IOException;
 
+import static rosesmp.roseranks.RoseRanks.getConfig;
 import static rosesmp.roseranks.RoseRanks.getLoadedUsers;
 
 @Mixin(value = net.minecraft.server.net.handler.PacketHandlerServer.class, remap = false)
@@ -48,7 +48,11 @@ public class PacketHandlerServer {
 		prefix = ChatEmotes.process(prefix);
 
 		//Apply configured chat formatting and add player's prefix
-		message = prefix + playerEntity.getDisplayName() + "§0: " + TextFormatting.RESET + message;
+		String format = getConfig().getYaml().getString("chatFormat");
+		message = format
+			.replace("{prefix}", prefix)
+			.replace("{name}", playerEntity.getDisplayName())
+			.replace("{message}", message);
 
 		RoseRanks.LOGGER.info(message);
 		mcServer.playerList.sendEncryptedChatToAllPlayers(message);

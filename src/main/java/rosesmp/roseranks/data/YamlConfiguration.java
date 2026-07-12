@@ -1,14 +1,11 @@
 package rosesmp.roseranks.data;
 
-import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
-import java.io.File;
-import java.io.IOException;
-import org.yaml.snakeyaml.constructor.Constructor;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class YamlConfiguration {
@@ -36,10 +33,16 @@ public class YamlConfiguration {
 	/**
 	 * Writes an object to a yml file.
 	 */
-	public <T> void save(T object) throws IOException {
-		Yaml yaml = new Yaml(new Constructor(object.getClass(), new LoaderOptions()));
-		String yamlContent = yaml.dumpAs(object, Tag.MAP, null);
-		Files.write(file.toPath(), yamlContent.getBytes());
+	public void save(Map<String, Object> data) throws IOException {
+		PrintWriter writer = new PrintWriter(file);
+
+		DumperOptions options = new DumperOptions();
+		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+		options.setIndent(2);
+
+		Yaml yaml = new Yaml(options);
+		yaml.dump(data, writer);
+		writer.close();
 	}
 
 	/**
@@ -47,7 +50,7 @@ public class YamlConfiguration {
 	 * @param path The location of the desired property.
 	 * @return The desired property.
 	 */
-	private Object getProperty(String path) throws IOException {
+	private Object get(String path) throws IOException {
 		InputStream inputStream = Files.newInputStream(Paths.get(file.getPath()));
 		Yaml yaml = new Yaml();
 		Map<String, Object> data = yaml.load(inputStream);
@@ -61,7 +64,7 @@ public class YamlConfiguration {
 	 * @return The desired String
 	 */
 	public String getString(String path) throws IOException {
-		return getProperty(path).toString();
+		return get(path).toString();
 	}
 
 	/**
@@ -70,6 +73,19 @@ public class YamlConfiguration {
 	 * @return The desired int.
 	 */
 	public int getInt(String path) throws IOException {
-		return (int) getProperty(path);
+		return (int) get(path);
+	}
+
+	/**
+	 * Retrieves a string from the yml.
+	 * @param path The location of the desired String.
+	 * @return The desired String
+	 */
+	public ArrayList<String> getList(String path) throws IOException {
+		return (ArrayList<String>) get(path);
+	}
+
+	public File getFile() {
+		return file;
 	}
 }

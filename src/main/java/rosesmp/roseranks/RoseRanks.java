@@ -18,7 +18,8 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	public static final String MOD_ID = HalpLibe.registerMod("roseranks", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public Config config;
+	private Config config;
+
 	public static APIService apiService;
 	private static HashMap<String, User> users;
 
@@ -29,7 +30,7 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 		users = new HashMap<>();
 
 		try {
-			LOGGER.info("RoseRanks initialized. Default group: {}", defaultGroup().name());
+			LOGGER.info("RoseRanks initialized. Default group: {}", defaultGroup().getName());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -47,9 +48,6 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	@Override
 	public void initNamespaces() {}
 
-	/**
-	 * @return The list of loaded users
-	 */
 	public static HashMap<String, User> getUsers() {
 		return users;
 	}
@@ -58,7 +56,9 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 	 * @return The configured default group
 	 */
 	public static Group defaultGroup() throws IOException {
-		//String name = yamlService.getString(yamlService.configFile, "default-group");
-		return new Group("e");
+		Group group = new Group();
+		group.load("Bud");
+
+		return group;
 	}
 }

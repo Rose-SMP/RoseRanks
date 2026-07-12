@@ -1,40 +1,72 @@
 package rosesmp.roseranks.data;
 
 import net.fabricmc.loader.api.FabricLoader;
+import rosesmp.roseranks.RoseRanks;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import static rosesmp.roseranks.RoseRanks.*;
+import static rosesmp.roseranks.RoseRanks.MOD_ID;
 
 /**
  * The data structure RoseRanks uses to handle player information.
  */
 public class User {
-	private final YamlConfiguration yaml;
-	private final File file;
-	private final UUID uuid;
-	private Group group;
+	private YamlConfiguration yaml;
+	private File file;
+	private UUID uuid;
 
-	public User(UUID uuid) {
-		this.uuid = uuid;
+	private String group;
 
-		this.file = new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/users/" + uuid + ".yml");
-		this.yaml = new YamlConfiguration(file);
-	}
+	public User() {}
 
 	/**
 	 * Loads a user's data from file.
 	 */
-	public void load() {
+	public void load(UUID uuid) throws IOException {
+		this.uuid = uuid;
+
+		//Load yml
+		file = new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/users/" + uuid + ".yml");
+		if (!file.exists()) {
+			intialize();
+		}
+		yaml = new YamlConfiguration(file);
 		yaml.load(this.getClass());
+
+		//Populate fields of this object with the yml's data
+		setGroup(RoseRanks.defaultGroup().getName());
+
+		RoseRanks.LOGGER.info("Loaded user {}!\nGroup: {}.", uuid, group);
+	}
+
+	/**
+	 * Creates a user's file for first-time joins.
+	 */
+	private void intialize() throws IOException {
+		file.getParentFile().mkdirs();
+		file.createNewFile();
+
+		try (InputStream inputStream = getClass().getResourceAsStream("/user.yml")) {
+			if (inputStream == null) {
+				throw new FileNotFoundException("Failed to get resource user.yml!");
+			}
+			Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
 
 	/**
 	 * Updates user's file with changes made during runtime.
 	 */
 	public void save() throws IOException {
-		yaml.save(this);
+		Map<String, Object> data = new LinkedHashMap<>();
+		data.put("group", group);
+
+		yaml.save(data);
 	}
 
 	/**
@@ -59,5 +91,48 @@ public class User {
 	 */
 	public boolean hasPermission() {
 		return false;
+	}
+
+	/*
+	 * Getters and Setters
+	 */
+
+	public YamlConfiguration getYaml() {
+		return yaml;
+	}
+
+	public void setYaml(YamlConfiguration yaml) {
+		this.yaml = yaml;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getPrefix() throws IOException {
+		Group group = new Group();
+		group.load(this.getGroup());
+
+		return group.getPrefix();
 	}
 }

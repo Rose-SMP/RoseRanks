@@ -3,17 +3,17 @@ package rosesmp.roseranks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rosesmp.roseranks.data.*;
 import rosesmp.roseranks.services.APIService;
 import turniplabs.halplibe.HalpLibe;
-import turniplabs.halplibe.util.GameStartEntrypoint;
-import turniplabs.halplibe.util.RecipeEntrypoint;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
+public class RoseRanks implements ModInitializer {
 	@Environment(EnvType.SERVER)
 	public static final String MOD_ID = HalpLibe.registerMod("roseranks", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -29,9 +29,9 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 		apiService = new APIService();
 		config = new Config();
 		loadedUsers = new HashMap<>();
-		groups = new HashMap<>();
 
 		try {
+			initializeGroups();
 			config.load();
 			LOGGER.info("RoseRanks initialized. Default group: {}", config.getDefaultGroup());
 		} catch (IOException e) {
@@ -39,17 +39,21 @@ public class RoseRanks implements ModInitializer, GameStartEntrypoint, RecipeEnt
 		}
 	}
 
-	@Override
-	public void beforeGameStart() {}
+	private void initializeGroups() throws IOException {
+		groups = new HashMap<>();
+		File[] directory =
+			new File(FabricLoader.getInstance().getConfigDir() + "/" + MOD_ID + "/groups").listFiles();
+		if (directory == null) {
+			return;
+		}
 
-	@Override
-	public void afterGameStart() {}
-
-	@Override
-	public void onRecipesReady() {}
-
-	@Override
-	public void initNamespaces() {}
+		//Iterate through groups folder, loading every group
+		for (File file : directory) {
+			String name = file.getName().replace(".yml", "");
+			Group group = new Group();
+			group.load(name);
+		}
+	}
 
 	public static Config getConfig() {
 		return config;

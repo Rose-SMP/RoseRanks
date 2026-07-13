@@ -17,15 +17,6 @@
 	"entrypoints": {
 		"main": [
 			"rosesmp.roseranks.RoseRanks"
-		],
-		"beforeGameStart": [
-			"rosesmp.roseranks.RoseRanks"
-		],
-		"afterGameStart": [
-			"rosesmp.roseranks.RoseRanks"
-		],
-		"recipesReady": [
-			"rosesmp.roseranks.RoseRanks"
 		]
 	},
 	"mixins": [

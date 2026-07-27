@@ -1,2 +1,2 @@
-defaultGroup: Bud
+defaultGroup: default
 chatFormat: "{prefix}{name}§0: §r{message}"

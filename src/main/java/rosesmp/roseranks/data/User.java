@@ -1,8 +1,6 @@
 package rosesmp.roseranks.data;
 
 import net.fabricmc.loader.api.FabricLoader;
-import rosesmp.roseranks.RoseRanks;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,8 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import static rosesmp.roseranks.RoseRanks.MOD_ID;
-import static rosesmp.roseranks.RoseRanks.getGroups;
+import static rosesmp.roseranks.RoseRanks.*;
 
 /**
  * The data structure RoseRanks uses to handle player information.
@@ -128,7 +125,7 @@ public class User {
 
 	public void setGroup(String group) throws IOException {
 		//Fallback is needed for when the default group did not exist at user creation
-		this.group = (!group.isEmpty()) ? group : RoseRanks.getConfig().getDefaultGroup();
+		this.group = (!group.isEmpty()) ? group : config().getDefaultGroup();
 	}
 
 	private Group resolveGroup() throws IOException {

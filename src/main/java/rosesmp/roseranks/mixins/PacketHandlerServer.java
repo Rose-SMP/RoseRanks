@@ -17,7 +17,7 @@ import rosesmp.roseranks.RoseRanks;
 import rosesmp.roseranks.data.User;
 import java.io.IOException;
 
-import static rosesmp.roseranks.RoseRanks.getConfig;
+import static rosesmp.roseranks.RoseRanks.config;
 import static rosesmp.roseranks.RoseRanks.getLoadedUsers;
 
 @Mixin(value = net.minecraft.server.net.handler.PacketHandlerServer.class, remap = false)
@@ -48,7 +48,7 @@ public class PacketHandlerServer {
 		prefix = ChatEmotes.process(prefix);
 
 		//Apply configured chat formatting and add player's prefix
-		String format = getConfig().getYaml().getString("chatFormat");
+		String format = config().getYaml().getString("chatFormat");
 		message = format
 			.replace("{prefix}", prefix)
 			.replace("{name}", playerEntity.getDisplayName())

@@ -55,7 +55,7 @@ public class RoseRanks implements ModInitializer {
 		}
 	}
 
-	public static Config getConfig() {
+	public static Config config() {
 		return config;
 	}
 

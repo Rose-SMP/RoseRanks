@@ -6,7 +6,6 @@ import net.minecraft.core.net.packet.PacketDisconnect;
 import net.minecraft.core.net.packet.PacketMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
-import net.minecraft.server.net.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,23 +56,5 @@ public class PacketHandlerServer {
 		RoseRanks.LOGGER.info(message);
 		mcServer.playerList.sendEncryptedChatToAllPlayers(message);
 		ci.cancel();
-	}
-
-	/**
-	 * Implements custom permissions system
-	 */
-	@Inject(at = @At(value = "HEAD"), method = "handleSlashCommand", remap = false)
-	public void onCommand(String s, CallbackInfo ci) throws IOException {
-		ServerCommandSource serverCommandSource = new ServerCommandSource(this.mcServer, this.playerEntity);
-
-		//Remove slash, then split each word, then get just the first
-		String commandLabel = s.substring(1).split(" ")[0];
-
-		//Deny command execution if the sender lacks the necessary permission, unless they're an operator
-		User user = getLoadedUsers().get(playerEntity.username);
-		if (!user.hasPermission("minecraft." + commandLabel) && !playerEntity.isOperator()) {
-			playerEntity.sendMessage("§eYou do not have permission to execute /" + commandLabel + "!");
-		}
-		//TODO: Empower permissions to grant access to op commands to non-ops
 	}
 }

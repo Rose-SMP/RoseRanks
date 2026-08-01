@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
-import static rosesmp.roseranks.RoseRanks.getGroups;
+import static rosesmp.roseranks.RoseRanks.groups;
 
 /**
  * A group of players used for player categorization and permission allocation.
@@ -51,7 +51,7 @@ public class Group {
 		setPermissions(yaml.getList("permissions"));
 
 		//Add group to list of loaded groups, so it doesn't need to be loaded every time it's accessed
-		getGroups().putIfAbsent(name, this);
+		groups().putIfAbsent(name, this);
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class Group {
 
 		//Check parent groups for the permission
 		for (String str : parents) {
-			if (getGroups().containsKey(str)) {
-				return getGroups().get(str).hasPermission(permission);
+			if (groups().containsKey(str)) {
+				return groups().get(str).hasPermission(permission);
 			}
 			Group group = new Group();
 			group.load(str);

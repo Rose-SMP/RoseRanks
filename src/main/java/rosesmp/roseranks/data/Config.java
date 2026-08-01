@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import static rosesmp.roseranks.RoseRanks.MOD_ID;
-import static rosesmp.roseranks.RoseRanks.getGroups;
+import static rosesmp.roseranks.RoseRanks.groups;
 
 public class Config {
 	private YamlConfiguration yaml;
@@ -68,7 +68,7 @@ public class Config {
 
 	public String getDefaultGroup() throws IOException {
 		//Create group if it does not exist
-		if (!getGroups().containsKey(defaultGroup)) {
+		if (!groups().containsKey(defaultGroup)) {
 			Group group = new Group();
 			group.load(defaultGroup);
 		}

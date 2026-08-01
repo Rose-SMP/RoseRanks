@@ -59,11 +59,11 @@ public class RoseRanks implements ModInitializer {
 		return config;
 	}
 
-	public static HashMap<String, User> getLoadedUsers() {
+	public static HashMap<String, User> users() {
 		return loadedUsers;
 	}
 
-	public static HashMap<String, Group> getGroups() {
+	public static HashMap<String, Group> groups() {
 		return groups;
 	}
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
-import static rosesmp.roseranks.RoseRanks.getLoadedUsers;
+import static rosesmp.roseranks.RoseRanks.users;
 
 @Mixin(value = net.minecraft.server.net.handler.PacketHandlerLogin.class, remap = false)
 public class PacketHandlerLogin {
@@ -29,6 +29,6 @@ public class PacketHandlerLogin {
 
 		User user = new User();
 		user.load(uuid);
-		getLoadedUsers().put(username, user);
+		users().put(username, user);
 	}
 }

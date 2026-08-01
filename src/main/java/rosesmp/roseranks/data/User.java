@@ -129,8 +129,8 @@ public class User {
 	}
 
 	private Group resolveGroup() throws IOException {
-		if (getGroups().containsKey(group)) {
-			return getGroups().get(group);
+		if (groups().containsKey(group)) {
+			return groups().get(group);
 		} else {
 			Group group = new Group();
 			group.load(this.getGroup());

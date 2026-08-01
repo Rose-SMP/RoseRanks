@@ -17,7 +17,7 @@ import rosesmp.roseranks.data.User;
 import java.io.IOException;
 
 import static rosesmp.roseranks.RoseRanks.config;
-import static rosesmp.roseranks.RoseRanks.getLoadedUsers;
+import static rosesmp.roseranks.RoseRanks.users;
 
 @Mixin(value = net.minecraft.server.net.handler.PacketHandlerServer.class, remap = false)
 public class PacketHandlerServer {
@@ -30,10 +30,10 @@ public class PacketHandlerServer {
 	 */
 	@Inject(at = @At(value = "HEAD"), method = "handleDisconnect", remap = false)
 	public void onDisconnect(PacketDisconnect packetDisconnect, CallbackInfo ci) throws IOException {
-		User user = getLoadedUsers().get(playerEntity.username);
+		User user = users().get(playerEntity.username);
 		user.save();
 
-		getLoadedUsers().remove(playerEntity.username);
+		users().remove(playerEntity.username);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class PacketHandlerServer {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleMessage", remap = false, cancellable = true)
 	public void onChat(PacketMessage packet, CallbackInfo ci, @Local(name = "message") String message) throws IOException {
 		//Get player's prefix
-		User user = getLoadedUsers().get(playerEntity.username);
+		User user = users().get(playerEntity.username);
 		String prefix = user.getPrefix();
 		prefix = ChatEmotes.process(prefix);
 

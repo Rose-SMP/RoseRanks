@@ -51,7 +51,7 @@ public class PacketHandlerServer {
 		message = format
 			.replace("{prefix}", prefix)
 			.replace("{name}", playerEntity.getDisplayName())
-			.replace("{message}", message);
+			.replace("{message}", "§r" + message);
 
 		RoseRanks.LOGGER.info(message);
 		mcServer.playerList.sendEncryptedChatToAllPlayers(message);
